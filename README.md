@@ -60,3 +60,17 @@ All of this happens
       - Conforms to standards
   - Jenkins Docker Template is created
   - Jenkins Job is created
+
+A complete CI/CD build pipeline/environment/process is created, no intervention by a build team or any other infrastructure team. Software development teams are responsible for everything (except, of course, maintaining the infrastructure that these process run on). Pretty cool, yeah?
+
+
+##### Milestones
+
+We will create this entire automated build system step-by-step (aka, our Milestones), from scratch, using Docker, Jenkins, Azure and GoLang. I'll even include a .NET Core as a sample app (since I should really brush the rust off...) just to mix things up.
+
+  - Setup Docker in Azure (and connect securely from a remote machine)
+  - Run Jenkins in Docker on the Azure
+  - Setup Jenkins to spin up ephemeral (short-lived Docker containers) for Jenkins slaves
+  - Setup a Docker registry/repository in Azure (including getting SSL certs)
+  - Explore all the DockHand code (GoLang) to allow hands-off build job creation
+  - Walk through creating a small sample software project utilizing this system
