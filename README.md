@@ -35,3 +35,28 @@ Anyway, I've been interested in containers for several years, but I have not had
   - Dev pushes Docker image to the orgs private Docker registry
       - Registry should already be active
   - Dev uses a tool (CLI) to create the build job or CI/CD pipeline
+
+
+So when you execute a command like the one below....
+
+```bash
+$ harbormaster --dockertlsfolder /tls/Certs                         \
+                -registryuser     ehime                             \
+                -registrypassword user1234!                         \
+                -imagename        mage-hard                         \
+                -label            mage_label                        \
+                -jenkinsurl       https://bld.ehimeprefecture.com   \
+                -jenkinsuser      bobTheBuilder                     \
+                -jenkinspassword  bob1234!                          \
+                -report           https://github.ehimeprefecture.com/user/mage-hard.git
+```
+
+All of this happens
+
+  - Docker image of the build environment is pulled to Docker host
+  - Docker container created and started
+      - Test performed on Docker container
+      - Actually runs and exits properly
+      - Conforms to standards
+  - Jenkins Docker Template is created
+  - Jenkins Job is created
