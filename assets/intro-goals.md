@@ -1,15 +1,14 @@
 ### Introduction and Goals
 
+
 ##### Architectural Diagram
 
 _Proposal:_
 
-![Architectural-Diagram](https://github.com/ehime/azure-countainerpipeline/blob/master/assets/01-architectural.png?raw=true "Architectural Diagram")
+![Architectural-Diagram](https://github.com/ehime/azure-containerpipeline/blob/master/assets/01-architectural.png?raw=true "Architectural Diagram")
 
 
 ##### Introduction
-
-In this scenario we will create an entire Automated Build System (ABS) step-by-step, from scratch, using Docker, Jenkins, Azure, and PHP (Magento).
 
 Jenkins will be our CI/CD pipeline manager and it will spin up ephemeral slave nodes when needed. What I mean by that is Jenkins will spin up Docker containers as build environments that only get started when a build job needs them, so if you need a Java build environment or a .NET Core environment, Jenkins will start a Docker container to handle your build and then destroy that node/container when the build is complete.
 
