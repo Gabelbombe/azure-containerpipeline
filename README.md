@@ -74,3 +74,10 @@ We will create this entire automated build system step-by-step (aka, our Milesto
   - Setup a Docker registry/repository in Azure (including getting SSL certs)
   - Explore all the DockHand code (GoLang) to allow hands-off build job creation
   - Walk through creating a small sample software project utilizing this system
+
+
+##### Architectural Diagram
+
+_Proposal:_
+
+![Architectural-Diagram](https://github.com/ehime/azure-countainerpipeline/blob/master/assets/01-architectural.png?raw=true "Architectural Diagram")
