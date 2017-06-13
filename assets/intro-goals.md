@@ -3,9 +3,9 @@
 
 ##### Architectural Diagram
 
-_Proposal:_
+_Current:_
 
-![Architectural-Diagram](https://github.com/ehime/azure-containerpipeline/blob/master/assets/01-architectural.png?raw=true "Architectural Diagram")
+![Architectural-Diagram](https://github.com/ehime/azure-containerpipeline/blob/master/assets/01-arch-introgoals.png?raw=true "Empty Architectural Diagram")
 
 
 ##### Introduction
