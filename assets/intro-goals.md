@@ -1,14 +1,14 @@
-### Introduction and Goals
+## Introduction and Goals
 
 
-##### Architectural Diagram
+### Architectural Diagram
 
 _Current:_
 
 ![Architectural-Diagram](https://github.com/ehime/azure-containerpipeline/blob/master/assets/01-arch-introgoals.png?raw=true "Empty Architectural Diagram")
 
 
-##### Introduction
+### Introduction
 
 Jenkins will be our CI/CD pipeline manager and it will spin up ephemeral slave nodes when needed. What I mean by that is Jenkins will spin up Docker containers as build environments that only get started when a build job needs them, so if you need a Java build environment or a .NET Core environment, Jenkins will start a Docker container to handle your build and then destroy that node/container when the build is complete.
 
@@ -17,7 +17,7 @@ We will also create a tool that I'm calling DockHand `(GoLang based)` that will 
 Anyway, I've been interested in containers for several years, but I have not had time to really dig in and understand Docker until recently. I watched Docker Deep Dive from Pluralsight, which really helped with my foundational knowledge. When I was searching for next steps, I found spatters of [LXC](https://en.wikipedia.org/wiki/LXC) technology blurbs but nothing concrete. So lots of experimentation and breaking things brought me to were I am today.
 
 
-##### Story
+### Story
 
   - As a build engineer I want to:
       - Avoid setting up environment after environment for dev teams
@@ -28,7 +28,7 @@ Anyway, I've been interested in containers for several years, but I have not had
       - Have the freedom to create build envs without making special reqs
 
 
-##### Outcome
+### Outcome
 
   -  Dev creates a docker image for build environment
       - Engineer uses this locally to run, test and debug
@@ -68,7 +68,7 @@ All of this happens
 A complete CI/CD build pipeline/environment/process is created, no intervention by a build team or any other infrastructure team. Software development teams are responsible for everything (except, of course, maintaining the infrastructure that these process run on). Pretty cool, yeah?
 
 
-##### Milestones
+### Milestones
 
 We will create this entire automated build system step-by-step (aka, our Milestones), from scratch, using Docker, Jenkins, Azure and GoLang. I'll even include a .NET Core as a sample app (since I should really brush the rust off...) just to mix things up.
 

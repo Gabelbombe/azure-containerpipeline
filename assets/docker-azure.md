@@ -65,7 +65,7 @@ We are going to create a new resource group and name it dockerBuild, I’m in Se
 
 Then, Click OK
 
-##### Pick Your Plan
+### Pick Your Plan
 
 Alright next we need to choose a plan for our VM. You will notice that even if you click View All we can't see the "A" plans that can be as cheap as $15 per month because I decided to leave the SSD selected. In preparing for this tutorial - I found that using the cheaper plans with the magnetic spinning disks made the Docker host run unbearably slow. So I'll pick the DS1_V2 Standard.
 
