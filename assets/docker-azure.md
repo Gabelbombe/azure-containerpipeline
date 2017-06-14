@@ -4,7 +4,7 @@
 
 _Current:_
 
-![Docker-Azure-Diagram](https://github.com/ehime/azure-containerpipeline/blob/master/assets/02-arch-docker-azure.png?raw=true "Docker in Azure Diagram")
+![Docker-Azure-Diagram](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-arch-docker-azure.png?token=AGLSaSwXnBWVaEx3i_r2uNrDtWR3EUOTks5ZSsAawA%3D%3D "Docker in Azure Diagram")
 
 
 ### Introduction
@@ -61,7 +61,7 @@ Back in our browser, paste in the key. you can see our -C comment is here in the
 
 We are going to create a new resource group and name it dockerBuild, I'm in Seattle so I'm chosing westus as the location.
 
-![Azure-Basics](https://github.com/ehime/azure-containerpipeline/blob/master/assets/02-azure-basics.png?raw=true "Azure Basics Menu")
+![Azure-Basics](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-azure-basics.png?token=AGLSaZ64Ud8G3ylS-GoqRI5NhhTAhLCoks5ZSsC7wA%3D%3D "Azure Basics Menu")
 
 Then, Click OK
 
@@ -69,7 +69,7 @@ Then, Click OK
 
 Alright next we need to choose a plan for our VM. You will notice that even if you click View All we can't see the "A" plans that can be as cheap as $15 per month because I decided to leave the SSD selected. In preparing for this tutorial - I found that using the cheaper plans with the magnetic spinning disks made the Docker host run unbearably slow. So I'll pick the DS1_V2 Standard.
 
-![Small-Plan](https://github.com/ehime/azure-containerpipeline/blob/master/assets/02-plan-small.png?raw=true "Azure Pick Small Plan")
+![Small-Plan](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-plan-small.png?token=AGLSacAzGm3dXxrlUMAbVecX-3YvCN1Lks5ZSsD8wA%3D%3D "Azure Pick Small Plan")
 
 Click Select
 
@@ -77,7 +77,7 @@ Click Select
 
 I am leaving all of the default names here for the storage account and all of the networking components. Over the past couple years of working with resources in the cloud, I've found that I don't care about machine / resource names. I used to plan out resource names, even going with themes like Lord of the Rings or Star Wars. Well now all of the resources are disposable and easily destroyed and rebuilt so names just don't matter to me any more. I'm not going to setup a high availability set either. So I am going with all of the defaults. Click okay.
 
-![VM-Settings](https://github.com/ehime/azure-containerpipeline/blob/master/assets/02-vm-settings.png?raw=true "Azure VM Settings")
+![VM-Settings](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-vm-settings.png?token=AGLSaVlhYKRnATMfcwszJ-w3EZ2dIEonks5ZSsEIwA%3D%3D "Azure VM Settings")
 
 Azure validates the build, give us a quick summary. Click okay one more time and Azure starts provisioning the VM for us.
 
@@ -94,3 +94,19 @@ Add a DNS name to our IP settings… Click Configuration - I will use dockerbuil
 We want to take note of the public IP address and DNS name for our VM... so I'll open a text editor, Visual Studio Code is my current favorite, to take a few notes.
 
 Click Save
+
+Copy the DNS and IP, paste them in a text editor.
+
+I will also point a custom DNS name at this VM. Later in this series we’re going to get TLS certificates from [letsencrypt](https://letsencrypt.org/) for secure https communication to our private Docker registry. We will must have a custom domain name to make that happen. The quick reason is that Azure domains are secured by wildcard certs which won’t work for our purposes. _If you don’t have a domain name I strongly suggest that you obtain one so that we can establish secure communication with our private Docker Registry (and Jenkins)._
+
+All name providers are different and you can google for how to add an a-record at yours. At my provider in the Host Records interface I will just paste the public IP address into the A-record for the domain name I want to use __dockerbuild.ehimeprefecture.com__.
+
+![Host-Record](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-host-record.png?token=AGLSaVlhYKRnATMfcwszJ-w3EZ2dIEonks5ZSsEIwA%3D%3D "Host a Record")
+
+Here are my notes so far:
+
+  - 40.78.31.164
+  - dockerbuild.ehimeprefecture.com
+  - dockerbuildsys.westus.cloudapp.azure.com
+
+We will be adding our local IP address to this list shortly.
