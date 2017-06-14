@@ -89,7 +89,7 @@ Click on dockerBuild (Resource Group), this gives us a view of our newly provisi
 
 Click on dockerBuild (the VM). Then click on the IP address.
 
-Add a DNS name to our IP settings… Click Configuration - I will use dockerbuildsys
+Add a DNS name to our IP settings... Click Configuration - I will use dockerbuildsys
 
 We want to take note of the public IP address and DNS name for our VM... so I'll open a text editor, Visual Studio Code is my current favorite, to take a few notes.
 
@@ -97,7 +97,7 @@ Click Save
 
 Copy the DNS and IP, paste them in a text editor.
 
-I will also point a custom DNS name at this VM. Later in this series we’re going to get TLS certificates from [letsencrypt](https://letsencrypt.org/) for secure https communication to our private Docker registry. We will must have a custom domain name to make that happen. The quick reason is that Azure domains are secured by wildcard certs which won’t work for our purposes. _If you don’t have a domain name I strongly suggest that you obtain one so that we can establish secure communication with our private Docker Registry (and Jenkins)._
+I will also point a custom DNS name at this VM. Later in this series we're going to get TLS certificates from [letsencrypt](https://letsencrypt.org/) for secure https communication to our private Docker registry. We will must have a custom domain name to make that happen. The quick reason is that Azure domains are secured by wildcard certs which won't work for our purposes. _If you don't have a domain name I strongly suggest that you obtain one so that we can establish secure communication with our private Docker Registry (and Jenkins)._
 
 All name providers are different and you can google for how to add an a-record at yours. At my provider in the Host Records interface I will just paste the public IP address into the A-record for the domain name I want to use __dockerbuild.ehimeprefecture.com__.
 
@@ -115,7 +115,7 @@ We will be adding our local IP address to this list shortly.
 
 Azure already opened up port 22 for SSH communication, very thoughtful of Microsoft.
 
-Connect via SSH - we’ll use our custom domain name.
+Connect via SSH - we'll use our custom domain name.
 
 ```bash
 
@@ -128,7 +128,7 @@ To run a command as administrator (user "root"), use "sudo <command>".
 dockeruser@dockerBuild:~$
 ```
 
-Connected! While we are in here we’re going to grab the local/private IP address using the ifconfig command:
+Connected! While we are in here we're going to grab the local/private IP address using the ifconfig command:
 
 ```bash
 $ ifconfig
@@ -143,13 +143,13 @@ eth0      Link encap:Ethernet  HWaddr 00:0d:3a:30:21:a5
           RX bytes:2252753926 (2.2 GB)  TX bytes:238825364 (238.8 MB)
 ```
 
-We want the inet addr for the eth0 adapter. We’ll also copy that into our notes for use later. We can exit / logout of the SSH session.
+We want the inet addr for the `eth0 adapter`. We'll also copy that into our notes for use later. We can exit / logout of the SSH session.
 
 ```bash
 $ exit
 
 logout
-Connection to dockerbuild.harebrained-apps.com closed.
+Connection to dockerbuild.ehimeprefecture.com closed.
 $
 ```
 
@@ -159,11 +159,115 @@ Click on `dockerBuild (Resource Group) > Network Security Group, [Inbound Securi
 
 The first rule we are going to add is for web/http access for our Jenkins server. HTTP is a preconfigured service you can pick from the Services drop-down. Lets name this allow-http, click ok.
 
-Next we’re going to add secure web / https communication. Select HTTPS from the Service drop down. We’ll call this `allow-https`, click ok.
+Next we're going to add secure web / https communication. Select HTTPS from the Service drop down. We'll call this `allow-https`, click ok.
 
-Last one we are going to add for now, we are going open a port for secure Docker TLS communication. We’ll call this allow-docker-tls and since this is not a preconfigured service so we have to make a couple more choices:
+Last one we are going to add for now, we are going open a port for secure Docker TLS communication. We'll call this allow-docker-tls and since this is not a preconfigured service so we have to make a couple more choices:
 
   - TCP as the protocol
   - Port 2376
 
 Click OK
+
+Our inbound security rules should now look about like this:
+
+![Ingress-Rules](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-ingress-rules.png?token=AGLSaU2YqOaLJDyG20Lw9Dk-AyFJz7bmks5ZSsR7wA%3D%3D "Inbound (ingress) Rules")
+
+### TLS CA and Certs
+
+We have one more thing to do before we install Docker in our VM. Docker uses [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) with client certificates for authentication to communicate with remote hosts. Our Docker host daemon will only accept connections from clients authenticated by a certificate signed by that CA. So we will create our own certificate authority, server and client certs and keys. Interesting aside regarding self-signed client certs: [Trusted CA for Client Certs](https://schnouki.net/posts/2015/11/25/lets-encrypt-and-client-certificates/)?
+
+For the sake of organization we are going to create a local folder to hold our CA and certs.
+
+```bash
+$ mkdir -p tlsBuild && cd $_
+```
+
+First we will create the certificate authority key and we must add a passphrase
+
+```bash
+$ openssl genrsa -aes256 -out ca-key.pem 4096
+
+Generating RSA private key, 4096 bit long modulus
+..........................................++
+...........++
+e is 65537 (0x10001)
+Enter pass phrase for ca-key.pem:
+Verifying - Enter pass phrase for ca-key.pem:
+```
+
+Next we will create the certificate authority itself...
+
+```bash
+$ openssl req -new -x509 -days 365 -key ca-key.pem -sha256 -out ca.pem
+
+Enter pass phrase for ca-key.pem:
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) []:US
+State or Province Name (full name) []:Washington
+Locality Name (eg, city) []:Seattle
+Organization Name (eg, company) []:Ehime Prefecture, LLC
+Organizational Unit Name (eg, section) []:Cloud Infrastructure
+Common Name (e.g. server FQDN or YOUR name) [Jd Daniel]:ehimeprefecture.com
+Email Address []:niigata@ehimeprefecture.com
+```
+
+Now that we have a certificate authority, we can create a server key and certificate signing request (CSR) and with these we will create our server certificate. Make sure that “Common Name” or CN matches the hostname you will use to connect to Docker in my case that is my custom domain name.
+
+```bash
+$ openssl genrsa -out server-key.pem 4096
+
+$ openssl req -subj "/CN=dockerbuild.ehimeprefecture.com" -sha256 -new -key server-key.pem -out server.csr
+```
+
+Since the TLS connection can be made via IP address (between machines on the private network in Azure, `localhost:127.0.0.1`, and to the public IP address from external machines) in addition to two DNS names, we need to specify all of the DNS and IP options. This is done in a certificate extensions file. We will just echo the options out to that file...
+
+
+echo subjectAltName = IP:40.78.31.164,IP:10.0.0.4,IP:127.0.0.1,DNS:dockerbuildsys.westus.cloudapp.azure.com,DNS:dockerbuild.ehimeprefecture.com > extfile.cnf
+
+Finally we will actually create the server certificate
+
+```bash
+$ openssl x509 -req -days 365 -sha256 -in server.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem -extfile extfile.cnf
+```
+
+Server side done. Now for client authentication we will create a client key and certificate signing request which we will use to create our client cert
+
+```bash
+$ openssl genrsa -out key.pem 4096
+
+$ openssl req -subj '/CN=client' -new -key key.pem -out client.csr
+```
+
+To make the certificate suitable for client authentication, update our certificate extensions
+
+```bash
+$ echo extendedKeyUsage = clientAuth > extfile.cnf
+
+$ openssl x509 -req -days 365 -sha256 -in client.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out cert.pem -extfile extfile.cnf
+```
+
+After generating our client and server certificates, cert.pem and server-cert.pem, we can safely remove the two certificate signing requests.
+
+```bash
+$ rm -v client.csr server.csr
+```
+
+In order to protect your keys from accidental damage, you will want to remove write permissions and also make them only readable by you, change file modes as follows:
+
+```bash
+$ chmod -v 0400 ca-key.pem key.pem server-key.pem
+```
+
+Certificates can be world-readable, but you might want to remove write access to prevent accidental damage:
+
+```bash
+$ chmod -v 0444 ca.pem server-cert.pem cert.pem
+```
+
+I guess this is as good of a time as any to bring this up… anyone with these keys can give any instructions to your Docker daemon, including giving them root access to the machine hosting the daemon. Guard these keys as you would a root password!
