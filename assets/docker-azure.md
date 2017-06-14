@@ -4,7 +4,7 @@
 
 _Current:_
 
-![Docker-Azure-Diagram](https://github.com/ehime/azure-containerpipeline/blob/master/assets/02-docker-azure.png?raw=true "Docker in Azure Diagram")
+![Docker-Azure-Diagram](https://github.com/ehime/azure-containerpipeline/blob/master/assets/02-arch-docker-azure.png?raw=true "Docker in Azure Diagram")
 
 
 ### Introduction
