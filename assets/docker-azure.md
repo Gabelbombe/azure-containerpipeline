@@ -101,7 +101,7 @@ I will also point a custom DNS name at this VM. Later in this series we’re goi
 
 All name providers are different and you can google for how to add an a-record at yours. At my provider in the Host Records interface I will just paste the public IP address into the A-record for the domain name I want to use __dockerbuild.ehimeprefecture.com__.
 
-![Host-Record](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-host-record.png?token=AGLSaVlhYKRnATMfcwszJ-w3EZ2dIEonks5ZSsEIwA%3D%3D "Host a Record")
+![Host-Record](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-host-record.png?token=AGLSaQ8kBzQLsTvUweze0GCRSvXS-AoRks5ZSsLjwA%3D%3D "Host a Record")
 
 Here are my notes so far:
 
@@ -110,3 +110,60 @@ Here are my notes so far:
   - dockerbuildsys.westus.cloudapp.azure.com
 
 We will be adding our local IP address to this list shortly.
+
+### SSH to our VM
+
+Azure already opened up port 22 for SSH communication, very thoughtful of Microsoft.
+
+Connect via SSH - we’ll use our custom domain name.
+
+```bash
+
+$ ssh dockeruser@dockerbuild.ehimeprefecture.com
+
+Welcome to Ubuntu 16.04.1 LTS (GNU/Linux 4.4.0-38-generic x86_64)
+...
+To run a command as administrator (user "root"), use "sudo <command>".
+
+dockeruser@dockerBuild:~$
+```
+
+Connected! While we are in here we’re going to grab the local/private IP address using the ifconfig command:
+
+```bash
+$ ifconfig
+
+eth0      Link encap:Ethernet  HWaddr 00:0d:3a:30:21:a5
+          inet addr:10.0.0.4  Bcast:10.0.0.255  Mask:255.255.255.0
+          inet6 addr: fe80::20d:3aff:fe30:21a5/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:1674984 errors:0 dropped:2 overruns:0 frame:0
+          TX packets:567214 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:2252753926 (2.2 GB)  TX bytes:238825364 (238.8 MB)
+```
+
+We want the inet addr for the eth0 adapter. We’ll also copy that into our notes for use later. We can exit / logout of the SSH session.
+
+```bash
+$ exit
+
+logout
+Connection to dockerbuild.harebrained-apps.com closed.
+$
+```
+
+Back into the Azure portal – we need to open a few more ports for our system to work.
+
+Click on `dockerBuild (Resource Group) > Network Security Group, [Inbound Security Rules]`, then click add.
+
+The first rule we are going to add is for web/http access for our Jenkins server. HTTP is a preconfigured service you can pick from the Services drop-down. Lets name this allow-http, click ok.
+
+Next we’re going to add secure web / https communication. Select HTTPS from the Service drop down. We’ll call this `allow-https`, click ok.
+
+Last one we are going to add for now, we are going open a port for secure Docker TLS communication. We’ll call this allow-docker-tls and since this is not a preconfigured service so we have to make a couple more choices:
+
+  - TCP as the protocol
+  - Port 2376
+
+Click OK
