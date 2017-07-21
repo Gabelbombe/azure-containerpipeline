@@ -9,6 +9,6 @@ Creating a automated build pipeline for Azure has been an idea I've been kicking
   - [Introduction and Goals](https://github.com/ehime/azure-containerpipeline/blob/master/assets/intro-goals.md)
   - [Docker in Azure](https://github.com/ehime/azure-containerpipeline/blob/master/assets/docker-azure.md)
 
-  ## Maintainer
+## Maintainer
 
-  [ehime :: Jd Daniel](mailto:dodomeki@gmail.com)
+[ehime :: Jd Daniel](mailto:dodomeki@gmail.com)
