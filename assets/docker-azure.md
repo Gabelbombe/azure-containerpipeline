@@ -118,7 +118,6 @@ Azure already opened up port 22 for SSH communication, very thoughtful of Micros
 Connect via SSH - we'll use our custom domain name.
 
 ```bash
-
 $ ssh dockeruser@dockerbuild.ehimeprefecture.com
 
 Welcome to Ubuntu 16.04.1 LTS (GNU/Linux 4.4.0-38-generic x86_64)
@@ -150,6 +149,7 @@ $ exit
 
 logout
 Connection to dockerbuild.ehimeprefecture.com closed.
+
 $
 ```
 
@@ -179,13 +179,17 @@ We have one more thing to do before we install Docker in our VM. Docker uses [TL
 For the sake of organization we are going to create a local folder to hold our CA and certs.
 
 ```bash
-$ mkdir -p tlsBuild && cd $_
+$ mkdir -p tlsBuild && \
+  cd $_
 ```
 
 First we will create the certificate authority key and we must add a passphrase
 
 ```bash
-$ openssl genrsa -aes256 -out ca-key.pem 4096
+$ openssl genrsa  \
+ -aes256          \
+ -out ca-key.pem  \
+4096
 
 Generating RSA private key, 4096 bit long modulus
 ..........................................++
@@ -198,7 +202,14 @@ Verifying - Enter pass phrase for ca-key.pem:
 Next we will create the certificate authority itself...
 
 ```bash
-$ openssl req -new -x509 -days 365 -key ca-key.pem -sha256 -out ca.pem
+$ openssl req     \
+ -new             \
+ -x509            \
+ -days 365        \
+ -key ca-key.pem  \
+ -sha256          \
+ -out             \
+ca.pem
 
 Enter pass phrase for ca-key.pem:
 You are about to be asked to enter information that will be incorporated
@@ -220,9 +231,16 @@ Email Address []:niigata@ehimeprefecture.com
 Now that we have a certificate authority, we can create a server key and certificate signing request (CSR) and with these we will create our server certificate. Make sure that “Common Name” or CN matches the hostname you will use to connect to Docker in my case that is my custom domain name.
 
 ```bash
-$ openssl genrsa -out server-key.pem 4096
+$ openssl genrsa      \
+ -out server-key.pem  \
+4096
 
-$ openssl req -subj "/CN=dockerbuild.ehimeprefecture.com" -sha256 -new -key server-key.pem -out server.csr
+$ openssl req                                 \
+ -subj "/CN=dockerbuild.ehimeprefecture.com"  \
+ -sha256                                      \
+ -new                                         \
+ -key server-key.pem                          \
+ -out server.csr
 ```
 
 Since the TLS connection can be made via IP address (between machines on the private network in Azure, `localhost:127.0.0.1`, and to the public IP address from external machines) in addition to two DNS names, we need to specify all of the DNS and IP options. This is done in a certificate extensions file. We will just echo the options out to that file...
@@ -233,7 +251,16 @@ echo subjectAltName = IP:40.78.31.164,IP:10.0.0.4,IP:127.0.0.1,DNS:dockerbuildsy
 Finally we will actually create the server certificate
 
 ```bash
-$ openssl x509 -req -days 365 -sha256 -in server.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem -extfile extfile.cnf
+$ openssl x509        \
+ -req                 \
+ -days 365            \
+ -sha256              \
+ -in server.csr       \
+ -CA ca.pem           \
+ -CAkey ca-key.pem    \
+ -CAcreateserial      \
+ -out server-cert.pem \
+ -extfile extfile.cnf
 ```
 
 Server side done. Now for client authentication we will create a client key and certificate signing request which we will use to create our client cert
@@ -241,7 +268,11 @@ Server side done. Now for client authentication we will create a client key and 
 ```bash
 $ openssl genrsa -out key.pem 4096
 
-$ openssl req -subj '/CN=client' -new -key key.pem -out client.csr
+$ openssl req       \
+ -subj '/CN=client' \
+ -new               \
+ -key key.pem       \
+ -out client.csr
 ```
 
 To make the certificate suitable for client authentication, update our certificate extensions
@@ -249,7 +280,16 @@ To make the certificate suitable for client authentication, update our certifica
 ```bash
 $ echo extendedKeyUsage = clientAuth > extfile.cnf
 
-$ openssl x509 -req -days 365 -sha256 -in client.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out cert.pem -extfile extfile.cnf
+$ openssl x509      \
+ -req               \
+ -days 365          \
+ -sha256            \
+ -in client.csr     \
+ -CA ca.pem         \
+ -CAkey ca-key.pem  \
+ -CAcreateserial    \
+ -out cert.pem      \
+ -extfile extfile.cnf
 ```
 
 After generating our client and server certificates, cert.pem and server-cert.pem, we can safely remove the two certificate signing requests.
@@ -261,13 +301,13 @@ $ rm -v client.csr server.csr
 In order to protect your keys from accidental damage, you will want to remove write permissions and also make them only readable by you, change file modes as follows:
 
 ```bash
-$ chmod -v 0400 ca-key.pem key.pem server-key.pem
+$ chmod -v 0400 {ca-,server-,}key.pem
 ```
 
 Certificates can be world-readable, but you might want to remove write access to prevent accidental damage:
 
 ```bash
-$ chmod -v 0444 ca.pem server-cert.pem cert.pem
+$ chmod -v 0444 {ca,server-,cert}.pem
 ```
 
 I guess this is as good of a time as any to bring this up... anyone with these keys can give any instructions to your Docker daemon, including giving them root access to the machine hosting the daemon. Guard these keys as you would a root password!
