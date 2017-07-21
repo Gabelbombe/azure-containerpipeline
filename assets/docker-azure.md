@@ -153,7 +153,7 @@ Connection to dockerbuild.ehimeprefecture.com closed.
 $
 ```
 
-Back into the Azure portal – we need to open a few more ports for our system to work.
+Back into the Azure portal - we need to open a few more ports for our system to work.
 
 Click on `dockerBuild (Resource Group) > Network Security Group, [Inbound Security Rules]`, then click add.
 
@@ -278,8 +278,73 @@ Back to the Azure portal...
 
 Click on dockerBuild (resource group) > dockerBuild (VM) > Extensions > Click the Add Button > we want Docker (Microsoft) > Click create
 
-You can see we’ve already done the prep work necessary here, we opened port 2376 and created the certs and keys we need.
+You can see we've already done the prep work necessary here, we opened port 2376 and created the certs and keys we need.
 
 Select the certificate authority, the server cert, the server key. Then click OK... Azure will go off and install Docker in our VM.
 
 ![Docker-Settings](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-docker-settings.png "Docker Settings")
+
+### Connecting to a remote Docker host
+
+Once the provisioning has succeeded. We will connect to the Docker host we've just created.
+
+Flip over to our terminal... note that we are in the ~/tlsBuild folder which will save us some typing. We are going to use the -tlsVerify flag with Docker, and also tell it what CA to use and what client certificate and key to use and what host to connect to (including port). Once we do all of that we can run any Docker command on the remote host, let's simply get the version info
+
+```bash
+$ cd ~/tlsBuild
+
+$ docker                                    \
+  --tlsverify                               \
+  --tlscacert=ca.pem                        \
+  --tlscert=cert.pem                        \
+  --tlskey=key.pem                          \
+  -H=dockerbuild.ehimeprefecture.com:2376   \
+version
+
+Client:
+ Version:      1.12.1
+ API version:  1.24
+ Go version:   go1.7.1
+ Git commit:   6f9534c
+ Built:        Thu Sep  8 10:31:18 2016
+ OS/Arch:      darwin/amd64
+
+Server:
+ Version:      1.12.1
+ API version:  1.24
+ Go version:   go1.6.3
+ Git commit:   23cf638
+ Built:        Thu Aug 18 05:33:38 2016
+ OS/Arch:      linux/amd64
+```
+
+As you can see Docker gives us the client and server version information both running Docker 1.12.1 with API version 1.24.
+
+Lets try to run this without the TLS info.
+
+```bash
+$ docker -H=dockerbuild.ehimeprefecture.com:2376 version
+
+Client:
+ Version:      1.12.1
+ API version:  1.24
+ Go version:   go1.7.1
+ Git commit:   6f9534c
+ Built:        Thu Sep  8 10:31:18 2016
+ OS/Arch:      darwin/amd64
+
+Get http://dockerbuild.ehimeprefecture.com:2376/v1.24/version: malformed HTTP response "\x15\x03\x01\x00\x02\x02".
+```
+
+We get an error and can't connect - docker is even so helpful as to suggest that we are trying to connect to a TLS-enabled daemon without TLS. Awesome.
+
+We really don't want to have to send in the four tls flags every time we want to connect to our remote host - so we will put our CA and client certs and keys in a location where the Docker client can find them.
+
+```bash
+$ mkdir -pv ~/.docker && \
+  cd ~/tlsBuild
+
+$ cp -v {ca,cert,key}.pem ~/.docker
+
+$ docker --tls -H tcp://dockerbuild.ehimeprefecture.com:2376 ps -a
+```
