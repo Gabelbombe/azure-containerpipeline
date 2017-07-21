@@ -270,4 +270,16 @@ Certificates can be world-readable, but you might want to remove write access to
 $ chmod -v 0444 ca.pem server-cert.pem cert.pem
 ```
 
-I guess this is as good of a time as any to bring this up… anyone with these keys can give any instructions to your Docker daemon, including giving them root access to the machine hosting the daemon. Guard these keys as you would a root password!
+I guess this is as good of a time as any to bring this up... anyone with these keys can give any instructions to your Docker daemon, including giving them root access to the machine hosting the daemon. Guard these keys as you would a root password!
+
+### Installing Docker in your VM
+
+Back to the Azure portal...
+
+Click on dockerBuild (resource group) > dockerBuild (VM) > Extensions > Click the Add Button > we want Docker (Microsoft) > Click create
+
+You can see we’ve already done the prep work necessary here, we opened port 2376 and created the certs and keys we need.
+
+Select the certificate authority, the server cert, the server key. Then click OK... Azure will go off and install Docker in our VM.
+
+![Docker-Settings](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-docker-settings.png "Docker Settings")
