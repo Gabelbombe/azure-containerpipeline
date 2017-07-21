@@ -5,7 +5,7 @@
 
 _Current:_
 
-![Architectural-Diagram](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/01-arch-introgoals.png?token=AGLSaTF8bepxTG4qH4ptpk3njo0exYLaks5ZSsA4wA%3D%3D "Empty Architectural Diagram")
+![Architectural-Diagram](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/01-arch-introgoals.png "Empty Architectural Diagram")
 
 
 ### Introduction
