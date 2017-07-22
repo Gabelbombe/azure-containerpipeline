@@ -305,3 +305,12 @@ $ rm -v client.csr server.csr
 $ chmod -v 0400 {ca-,server-,}key.pem
 $ chmod -v 0444 {ca,server-cert,cert}.pem
 ```
+
+### Convert certs to base64
+
+In order to send the TLS certificates up to Azure we need to convert them to base 64...
+
+```bash
+$ CA_BASE64="$(base64 ca.pem)"
+CERT_BASE64="$(base64 server-cert.pem)"
+KEY_BASE64="$(base64 server-key.pem)"
