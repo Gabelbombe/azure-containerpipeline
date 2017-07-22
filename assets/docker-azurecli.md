@@ -357,3 +357,7 @@ docker                          \
  -H=tcp://$publicIPAddress:2376 \
 version
 ```
+
+### Conclusion and Next Steps
+
+In this paper we've duplicated the efforts of the GUI install using only the command-line. In the next paper we will take this one step further and script (bash) the whole process.
