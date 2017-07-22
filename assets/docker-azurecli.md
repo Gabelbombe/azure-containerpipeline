@@ -87,3 +87,94 @@ docker exec                             \
  --address-prefixes 10.0.0.0/16         \
  --location westus
 ```
+
+
+### Create the subnet
+
+```bash
+docker exec
+ -it azureCli azure network vnet subnet create  \
+ --resource-group dockerBuild                   \
+ --vnet-name dockerBuildvnet                    \
+ --name internal                                \
+ --address-prefix 10.0.0.0/24
+```
+
+
+### Create the IP address
+
+```bash
+docker exec
+ -it azureCli azure network public-ip create  \
+ --resource-group dockerBuild                 \
+ --name dockerbuild-ip                     \
+ --location westus                         \
+ --allocation-method Static                \
+ --domain-name-label dockerbuildsystem     \
+	--idle-timeout 4                            \
+	--ip-version IPv4
+```
+
+
+### Create the NIC
+
+```bash
+docker exec
+ -it azureCli azure network nic create  \
+ --name dockerbuildNIC                  \
+ --resource-group dockerBuild           \
+ --location westus                      \
+ --private-ip-address 10.0.0.4          \
+ --subnet-vnet-name dockerBuildvnet     \
+ --public-ip-name dockerBuild-ip        \
+ --subnet-name internal
+```
+
+
+### Create the Network Security Group (NSG)
+
+```bash
+docker exec
+ -it azureCli azure network nsg create  \
+ --resource-group dockerBuild           \
+ --name dockerBuild-nsg                 \
+ --location westus
+```
+
+
+### Create the inbound security rules
+
+```bash
+docker exec
+ -it azureCli azure network nsg rule create \
+ --protocol tcp                             \
+ --direction inbound                        \
+ --priority 1000                            \
+ --destination-port-range 22                \
+ --access allow                             \
+ --resource-group dockerBuild               \
+ --nsg-name dockerBuild-nsg                 \
+ --name allow-ssh
+
+docker exec
+ -it azureCli azure network nsg rule create \
+ --protocol tcp                             \
+ --direction inbound                        \
+ --priority 1010                            \
+ --destination-port-range 80                \
+ --access allow                             \
+ --resource-group dockerBuild               \
+ --nsg-name dockerBuild-nsg                 \
+ --name allow-http
+
+docker exec
+ -it azureCli azure network nsg rule create \
+ --protocol tcp                             \
+ --direction inbound                        \
+ --priority 1020                            \
+ --destination-port-range 2376              \
+ --access allow                             \
+ --resource-group dockerBuild               \
+ --nsg-name dockerBuild-nsg                 \
+ --name allow-docker-tls
+```
