@@ -107,12 +107,12 @@ docker exec
 docker exec
  -it azureCli azure network public-ip create  \
  --resource-group dockerBuild                 \
- --name dockerbuild-ip                     \
- --location westus                         \
- --allocation-method Static                \
- --domain-name-label dockerbuildsystem     \
-	--idle-timeout 4                            \
-	--ip-version IPv4
+ --name dockerbuild-ip                        \
+ --location westus                            \
+ --allocation-method Static                   \
+ --domain-name-label dockerbuildsystem        \
+ --idle-timeout 4                             \
+ --ip-version IPv4
 ```
 
 
