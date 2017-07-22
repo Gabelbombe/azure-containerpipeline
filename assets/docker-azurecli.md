@@ -234,3 +234,74 @@ $ ssh
  -i keys/id_dockerBuild_rsa
 'sudo apt-get update'
 ```
+
+### Creating TLS Certificates and CA
+
+Nothing new here, we are creating the TLS certificates just like in the GUI buildout...
+
+```bash
+$ cd certs
+$ openssl genrsa  \
+ -aes256          \
+ -out ca-key.pem  \
+4096
+
+$ openssl req                                           \
+ -new                                                   \
+ -subj /CN=dockerbuildsystem.westus.cloudapp.azure.com  \
+ -key ca-key.pem                                        \
+ -x509                                                  \
+ -sha256                                                \
+ -days 365                                              \
+ -out ca.pem
+
+$ openssl genrsa      \
+  -out server-key.pem \
+$STR
+
+$ openssl req                               \
+ -new                                       \
+ -subj /CN=dockerbuild.ehimeprefecture.com  \
+ -sha256                                    \
+ -key server-key.pem                        \
+ -out server.csr
+
+$ echo subjectAltName=IP:10.0.0.4,IP:$publicIPAddress,IP:127.0.0.1,DNS:dockerbuild.ehimeprefecture.com,DNS:dockerbuildsystem.westus.cloudapp.azure.com > extfileServer.cnf
+
+$ openssl x509        \
+ -req                 \
+ -days 365            \
+ -sha256              \
+ -in server.csr       \
+ -CA ca.pem           \
+ -CAcreateserial      \
+ -CAkey ca-key.pem    \
+ -out server-cert.pem \
+ -extfile extfileServer.cnf
+
+$ openssl genrsa -out key.pem 4096
+
+$ openssl req     \
+ -subj /CN=client \
+ -new             \
+ -key key.pem     \
+ -out client.csr
+
+$ echo extendedKeyUsage = clientAuth > extfile.cnf
+
+$ openssl x509      \
+ -req               \
+ -days 365          \
+ -sha256            \
+ -in client.csr     \
+ -CA ca.pem         \
+ -CAkey ca-key.pem  \
+ -CAcreateserial    \
+ -out cert.pem      \
+ -extfile extfile.cnf
+
+$ rm -v client.csr server.csr
+
+$ chmod -v 0400 {ca-,server-,}key.pem
+$ chmod -v 0444 {ca,server-cert,cert}.pem
+```
