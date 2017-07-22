@@ -343,3 +343,17 @@ docker exec                                                                     
  --public-config-path '/config/certs/pub.json'                                                                \
  --private-config-path "/config/certs/prot.json"
 ```
+
+### Verify the connection
+
+We will use the `–tlsVerify` flag with Docker, and also tell it what CA to use and what client keys to use and what host to connect to (including port). Once we do all of that we can run any Docker command on the remote host, let’s simply get the version info
+
+```bash
+docker                          \
+ --tlsverify                    \
+ --tlscacert=ca.pem             \
+ --tlscert=cert.pem             \
+ --tlskey=key.pem               \
+ -H=tcp://$publicIPAddress:2376 \
+version
+```
