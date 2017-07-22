@@ -222,3 +222,15 @@ $ publicIPAddress=$(docker exec -it azureCli azure vm show dockerBuild dockerBui
 
 $ echo $publicIPAddress
 ```
+
+
+### Updating our VM
+
+Unfortunately just proceeding to install the Docker Extensions will fail unless we run an `apt-get update` in the VM.
+
+```bash
+$ ssh
+ -o StrictHostKeyChecking=no dockeruser@$publicIPAddress
+ -i keys/id_dockerBuild_rsa
+'sudo apt-get update'
+```
