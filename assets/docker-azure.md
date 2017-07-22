@@ -388,3 +388,47 @@ $ cp -v {ca,cert,key}.pem ~/.docker
 
 $ docker --tls -H tcp://dockerbuild.ehimeprefecture.com:2376 ps -a
 ```
+
+As you'd expect there are no containers running / or stopped on our new install.
+
+```bash
+$ docker -H tcp://dockerbuild.ehimeprefecture.com:2376 images
+```
+
+And no images. Let's fix that really quick.
+
+```bash
+$ docker --tls -H tcp://dockerbuild.ehimeprefecture.com:2376 run -d -p 80:8080 --name myJenkins jenkins
+
+Unable to find image 'jenkins:latest' locally
+latest: Pulling from library/jenkins
+...
+```
+
+You can see that Docker is pulling the Jenkins image to the remote host, once that is complete, we can access Jenkins at our IP or domain name: http://dockerbuild.ehimeprefecture.com
+
+Jenkins up and running in a Docker container, in a VM, in Azure. Since this isn't really the Jenkins image we want we won't start configuring it and we will clean up a bit.
+
+```bash
+$ docker --tls -H tcp://dockerbuild.ehimeprefecture.com:2376 rm -f myJenkins
+```
+
+And you know just to show we can do things locally on the VM we will SSH in to clean up a bit more.
+
+```bash
+$ ssh dockeruser@dockerbuild.ehimeprefecture.com
+
+$ docker rmi jenkins
+
+$ docker images
+```
+
+There all cleaned up, nice and tidy.
+
+### Conclusion and Next Steps
+
+We now have docker running securely in a VM in Azure. Pretty cool and pretty simple but this is the foundation of our Automated Build system so it was important to get it setup correctly.
+
+In the next installment we really get to the meat of our automated build system, using our own custom images for our Jenkins master, setting up ephemeral Jenkins slave nodes; Jenkins will spin up docker containers as build environments that only get started when a build job needs them, so if you need a Java build environment or a dotnet core environment, Jenkins will start start a Docker container to handle your build!
+
+Exciting stuff, right?
