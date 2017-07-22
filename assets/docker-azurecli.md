@@ -211,11 +211,11 @@ docker exec
  --storage-account-container-name vhds                  \
  --os-disk-vhd osdisk.vhd                               \
  --admin-username dockeruser                            \
- --ssh-publickey-file "/config/keys/id_dockerBuild_rsa.pub"
+ --ssh-publickey-file '/config/keys/id_dockerBuild_rsa.pub'
 ```
 
 
-### Get the public IP from azure
+### Get the public IP from Azure
 
 ```bash
 $ publicIPAddress=$(docker exec -it azureCli azure vm show dockerBuild dockerBuild |grep 'Public IP address' |awk -F':' '{print $3}' |tr -d '\r')
