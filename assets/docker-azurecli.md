@@ -70,14 +70,14 @@ $ docker exec -it azureCli azure account set 'Visual Studio Enterprise'
 ```
 
 
-###  Create the resource group
+###  Create the Resource Group
 
 ```bash
 docker exec -it azureCli azure group create dockerBuild westus
 ```
 
 
-### Create the virtual network (vnet)
+### Create the Virtual Network (VNET)
 
 ```bash
 docker exec                             \
@@ -89,7 +89,7 @@ docker exec                             \
 ```
 
 
-### Create the subnet
+### Create the Subnet
 
 ```bash
 docker exec
@@ -101,7 +101,7 @@ docker exec
 ```
 
 
-### Create the IP address
+### Create the IP Address
 
 ```bash
 docker exec
@@ -142,7 +142,7 @@ docker exec
 ```
 
 
-### Create the inbound security rules
+### Create the Inbound (Ingress) Security Rules
 
 ```bash
 docker exec
@@ -191,7 +191,7 @@ docker exec
 ```
 
 
-### Create the VM
+### Create the Virtual Machine
 
 ```bash
 docker exec
@@ -215,7 +215,7 @@ docker exec
 ```
 
 
-### Get the public IP from Azure
+### Get the Public IP from Azure
 
 ```bash
 $ publicIPAddress=$(docker exec -it azureCli azure vm show dockerBuild dockerBuild |grep 'Public IP address' |awk -F':' '{print $3}' |tr -d '\r')
@@ -224,7 +224,7 @@ $ echo $publicIPAddress
 ```
 
 
-### Updating our VM
+### Updating our Virtual Machine
 
 Unfortunately just proceeding to install the Docker Extensions will fail unless we run an `apt-get update` in the VM.
 
@@ -306,7 +306,7 @@ $ chmod -v 0400 {ca-,server-,}key.pem
 $ chmod -v 0444 {ca,server-cert,cert}.pem
 ```
 
-### Convert certs to base64
+### Convert Certificates to BASE64
 
 In order to send the TLS certificates up to Azure we need to convert them to base 64...
 
@@ -344,7 +344,7 @@ docker exec                                                                     
  --private-config-path "/config/certs/prot.json"
 ```
 
-### Verify the connection
+### Verify the Connection
 
 We will use the `–tlsVerify` flag with Docker, and also tell it what CA to use and what client keys to use and what host to connect to (including port). Once we do all of that we can run any Docker command on the remote host, let’s simply get the version info
 
