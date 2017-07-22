@@ -429,6 +429,6 @@ There all cleaned up, nice and tidy.
 
 We now have docker running securely in a VM in Azure. Pretty cool and pretty simple but this is the foundation of our Automated Build system so it was important to get it setup correctly.
 
-In the next installment we really get to the meat of our automated build system, using our own custom images for our Jenkins master, setting up ephemeral Jenkins slave nodes; Jenkins will spin up docker containers as build environments that only get started when a build job needs them, so if you need a Java build environment or a dotnet core environment, Jenkins will start start a Docker container to handle your build!
+In the next installment we really get to the meat of our automated build system, using our own custom images for our Jenkins master, setting up [ephemeral](https://en.wiktionary.org/wiki/ephemeral) Jenkins slave nodes; Jenkins will spin up docker containers as build environments that only get started when a build job needs them, so if you need a Java build environment or a dotnet core environment, Jenkins will start start a Docker container to handle your build!
 
 Exciting stuff, right?
