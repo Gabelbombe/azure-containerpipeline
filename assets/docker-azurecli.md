@@ -238,6 +238,7 @@ $ ssh
 ### Creating TLS Certificates and CA
 
 Nothing new here, we are creating the TLS certificates just like in the GUI buildout...
+I do recommend you to [rtfm](https://wiki.openssl.org/index.php/Manual:Req)
 
 ```bash
 $ cd certs
