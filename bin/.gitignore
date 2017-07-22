@@ -1,0 +1,9 @@
+## OSX Stuff
+.DS_Store
+.AppleDouble
+.LSOverride
+
+## We do not want to check in the keys or certs. 
+## That would be baaaaaaad....
+keys/
+certs/
