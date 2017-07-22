@@ -312,5 +312,34 @@ In order to send the TLS certificates up to Azure we need to convert them to bas
 
 ```bash
 $ CA_BASE64="$(base64 ca.pem)"
-CERT_BASE64="$(base64 server-cert.pem)"
-KEY_BASE64="$(base64 server-key.pem)"
+$ CERT_BASE64="$(base64 server-cert.pem)"
+$ KEY_BASE64="$(base64 server-key.pem)"
+```
+
+Then we will create two configuration files. One that is public and one that should be protected (since it contains your TLS certificate information)
+
+```bash
+echo '{
+    "docker":{
+        "port": "2376"
+    }
+}' > pub.json
+
+echo '{
+    "certs": {
+        "ca": "$CA_BASE64",
+        "cert": "$CERT_BASE64",
+        "key": "$KEY_BASE64"
+    }
+}' > prot.json
+```
+
+### Install the Docker Extensions on our VM
+
+```bash
+docker exec                                                                                                   \
+ -it azureCli azure vm extension set dockerBuild dockerBuild DockerExtension Microsoft.Azure.Extensions '1.0' \
+ --auto-upgrade-minor-version                                                                                 \
+ --public-config-path '/config/certs/pub.json'                                                                \
+ --private-config-path "/config/certs/prot.json"
+```
