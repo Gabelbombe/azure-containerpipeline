@@ -178,3 +178,47 @@ docker exec
  --nsg-name dockerBuild-nsg                 \
  --name allow-docker-tls
 ```
+
+
+### Bind the NSG to the NIC
+
+```bash
+docker exec
+ -it azureCli azure network nic set             \
+ --resource-group dockerBuild                   \
+ --name dockerbuildNIC                          \
+ --network-security-group-name dockerBuild-nsg
+```
+
+
+### Create the VM
+
+```bash
+docker exec
+ -it azureCli azure vm create                           \
+ --resource-group dockerBuild                           \
+ --name dockerBuild                                     \
+ --location westus                                      \
+ --vm-size Standard_DS1_V2                              \
+ --vnet-name dockerBuildvnet                            \
+ --vnet-address-prefix 10.0.0.0/16                      \
+ --vnet-subnet-name internal                            \
+ --vnet-subnet-address-prefix 10.0.0.0/24               \
+ --nic-name dockerbuildNIC                              \
+ --os-type linux                                        \
+ --image-urn Canonical:UbuntuServer:16.04.0-LTS:latest  \
+ --storage-account-name dockerbuildstorage              \
+ --storage-account-container-name vhds                  \
+ --os-disk-vhd osdisk.vhd                               \
+ --admin-username dockeruser                            \
+ --ssh-publickey-file "/config/keys/id_dockerBuild_rsa.pub"
+```
+
+
+### Get the public IP from azure
+
+```bash
+$ publicIPAddress=$(docker exec -it azureCli azure vm show dockerBuild dockerBuild |grep 'Public IP address' |awk -F':' '{print $3}' |tr -d '\r')
+
+$ echo $publicIPAddress
+```
