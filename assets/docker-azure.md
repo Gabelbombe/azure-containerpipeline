@@ -65,6 +65,7 @@ We are going to create a new resource group and name it dockerBuild, I'm in Seat
 
 Then, Click OK
 
+
 ### Pick Your Plan
 
 Alright next we need to choose a plan for our VM. You will notice that even if you click View All we can't see the "A" plans that can be as cheap as $15 per month because I decided to leave the SSD selected. In preparing for this tutorial - I found that using the cheaper plans with the magnetic spinning disks made the Docker host run unbearably slow. So I'll pick the DS1_V2 Standard.
@@ -73,6 +74,7 @@ Alright next we need to choose a plan for our VM. You will notice that even if y
 
 Click Select
 
+
 ### More VM Settings
 
 I am leaving all of the default names here for the storage account and all of the networking components. Over the past couple years of working with resources in the cloud, I've found that I don't care about machine / resource names. I used to plan out resource names, even going with themes like Lord of the Rings or Star Wars. Well now all of the resources are disposable and easily destroyed and rebuilt so names just don't matter to me any more. I'm not going to setup a high availability set either. So I am going with all of the defaults. Click okay.
@@ -80,6 +82,7 @@ I am leaving all of the default names here for the storage account and all of th
 ![VM-Settings](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-vm-settings.png "Azure VM Settings")
 
 Azure validates the build, give us a quick summary. Click okay one more time and Azure starts provisioning the VM for us.
+
 
 ### VM Preparation
 
@@ -110,6 +113,7 @@ Here are my notes so far:
   - dockerbuildsys.westus.cloudapp.azure.com
 
 We will be adding our local IP address to this list shortly.
+
 
 ### SSH to our VM
 
@@ -171,6 +175,7 @@ Click OK
 Our inbound security rules should now look about like this:
 
 ![Ingress-Rules](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-ingress-rules.png "Inbound (ingress) Rules")
+
 
 ### TLS CA and Certs
 
@@ -312,6 +317,7 @@ $ chmod -v 0444 {ca,server-,cert}.pem
 
 I guess this is as good of a time as any to bring this up... anyone with these keys can give any instructions to your Docker daemon, including giving them root access to the machine hosting the daemon. Guard these keys as you would a root password!
 
+
 ### Installing Docker in your VM
 
 Back to the Azure portal...
@@ -323,6 +329,7 @@ You can see we've already done the prep work necessary here, we opened port 2376
 Select the certificate authority, the server cert, the server key. Then click OK... Azure will go off and install Docker in our VM.
 
 ![Docker-Settings](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/02-docker-settings.png "Docker Settings")
+
 
 ### Connecting to a remote Docker host
 
@@ -424,6 +431,7 @@ $ docker images
 ```
 
 There all cleaned up, nice and tidy.
+
 
 ### Conclusion and Next Steps
 

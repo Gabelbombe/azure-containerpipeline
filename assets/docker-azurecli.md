@@ -1,5 +1,6 @@
 ## Docker in Azure via CLI
 
+
 ### Architectural Diagram
 
 _Current:_
@@ -11,6 +12,7 @@ _Current:_
 
 In the previous portion we used the Azure Portal web interface to setup a Linux VM in Azure, installed Docker on that VM and setup secure communication to the remote Docker host. In this document we will do the same thing but through the Azure CLI ([Command-line Interface](https://en.wikipedia.org/wiki/Command-line_interface)). This is just another way to accomplish what we did prior too, so if you are happy with using the Azure portal then you can skip to the next section.
 
+
 ### Azure CLI
 
 You can [install the Azure CLI](https://azure.microsoft.com/en-us/documentation/articles/xplat-cli-install/) locally or if you run Docker on your machine (and I suspect you do if you are interested in this series) running the CLI in a Docker container is my favorite way to access the CLI - nothing installed on my machine!
@@ -20,6 +22,7 @@ It is as simple as:
 ```bash
 $ docker run -it microsoft/azure-cli
 ```
+
 
 ### Create SSH Keys
 
@@ -64,4 +67,23 @@ After we follow the instructions we are logged in and we can procedd to use the 
 
 ```bash
 $ docker exec -it azureCli azure account set 'Visual Studio Enterprise'
+```
+
+
+###  Create the resource group
+
+```bash
+docker exec -it azureCli azure group create dockerBuild westus
+```
+
+
+### Create the virtual network (vnet)
+
+```bash
+docker exec                             \
+ -it azureCli azure network vnet create \
+ --resource-group dockerBuild           \
+ --name dockerBuildvnet                 \
+ --address-prefixes 10.0.0.0/16         \
+ --location westus
 ```
