@@ -66,7 +66,7 @@ $ docker exec -it azureCli azure login
 After we follow the instructions we are logged in and we can procedd to use the Azure CLI. I have two Azure subscriptions, so I want to make sure I am using the correct one:
 
 ```bash
-$ docker exec -it azureCli azure account set 'Visual Studio Enterprise'
+$ docker exec -it azureCli azure account set 'Niigata-Ken'
 ```
 
 
@@ -238,7 +238,7 @@ $ ssh
 ### Creating TLS Certificates and CA
 
 Nothing new here, we are creating the TLS certificates just like in the GUI buildout...
-I do recommend you to [rtfm](https://wiki.openssl.org/index.php/Manual:Req)
+I do recommend you to [RTFM](https://wiki.openssl.org/index.php/Manual:Req) though as I had multiple _gotchas_ in creating these _both times_ insofar.
 
 ```bash
 $ cd certs
