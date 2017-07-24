@@ -274,7 +274,7 @@ mkdir -p "${tlsCertLocation}"
 /bin/sh CreateDockerTLS.sh $customDnsName $fullDnsName $publicIPAddress $privateIPAddress $tlsCertLocation
 
 echo -e "[info] Add Docker extension to Virtual Machine"
-/bin/sh add-docker-ext.sh $rgName $vmName $tlsCertLocation
+/bin/sh AddDockerExt.sh $rgName $vmName $tlsCertLocation
 
 echo -ne " Finished!\n\n"
 
