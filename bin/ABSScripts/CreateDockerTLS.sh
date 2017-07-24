@@ -3,7 +3,6 @@
 ## ./CreateDockerTLS.sh myhost.docker.com PUBLIC-IP PRIVATE-IP FOLDER
 ## ./CreateDockerTLS.sh myhost.docker.com 40.78.31.164 10.0.0.4 ~/tlsCerts
 
-set -e
 STR=4096
 if [ "$#" -gt 4 ] ; then
   DOCKER_HOST="$1"
@@ -98,8 +97,7 @@ echo -e "[info] Removing certificate signing requests"
 rm -v client.csr server.csr
 
 echo -e "[info] Removing extfile.cnf"
-rm -v extfile.cnf
-rm -v extfileServer.cnf
+rm -v extfile.cnf extfileServer.cnf
 
 echo -e "[info] Setting permissions on keys: read only by current user"
 chmod -v 0400 {ca-,server-,}key.pem
