@@ -49,6 +49,10 @@ We need to add this identity to our ssh agent so that it is usable on our system
 ```bash
 $ eval "$(ssh-agent -s)" && \
   ssh-add ~/.ssh/id_dockerbuild_rsa
+
+$ [[ ! $(grep 'id_dockerbuild_rsa' ~/.ssh/config) ]] && {
+  ex -sc '1i|IdentityFile ~/.ssh/id_dockerbuild_rsa' -cx ~/.ssh/config
+}
 ```
 
 Finally we need to copy the public key to the clipboard. I'm on a Mac so I'm using "pbcopy" if you aren't you can open the key in a text editor or simply $ cat the contents to the terminal screen and copy from there.
