@@ -45,7 +45,11 @@ done
 unset CA_BASE64 CERT_BASE64 KEY_BASE64
 
 echo -e "[info] Install Docker extensions in VM"
-docker exec -it azureCli azure vm extension set $rgName $vmName DockerExtension Microsoft.Azure.Extensions '1.0' --auto-upgrade-minor-version --public-config-path /config/$CERT_LOCATION/pub.json --private-config-path /config/$CERT_LOCATION/prot.json
+docker exec -it azureCli azure vm extension set $rgName $vmName \
+  DockerExtension Microsoft.Azure.Extensions '1.0'              \
+  --public-config-path "/config/${CERT_LOCATION}/pub.json"      \
+  --private-config-path "/config/${CERT_LOCATION}/prot.json"    \
+  --auto-upgrade-minor-version
 
 # Remove the .json files... no longer needed AND prot.json contains secrets
-rm -v prot.json pub.json
+rm -v {prot,pub}.json
