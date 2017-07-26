@@ -39,7 +39,7 @@ echo '{
 ## Kill the environment vars since they contain secrets
 echo -e "[info] Kill the CA, CERT, and KEY env vars"
 for sw in CA_BASE64 CERT_BASE64 KEY_BASE64 ; do
-  eval $sw='thesearentthedroidsyourelookingfor' ##my lowly 15pcs of flair...
+  eval $sw='TheseArentTheDroidsYoureLookingFor' ##my lowly 15pcs of flair...
 done
 
 unset CA_BASE64 CERT_BASE64 KEY_BASE64
