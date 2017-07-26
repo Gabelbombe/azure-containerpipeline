@@ -19,7 +19,9 @@ The scripts can be found in this paper under the [bin/AutoBuildScripts](https://
 
 ```bash
 $ git clone https://github.com/ehime/azure-containerpipeline.git AzurePipeline
-$mv AzurePipeline/bin/* .
+
+$ mv AzurePipeline/bin/* .
+
 $ cd AutoBuildScripts
 ```
 
