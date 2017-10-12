@@ -130,5 +130,36 @@ In jenkins-master Dockerfile:
 ![dockerfile-plugins](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/03-dockerfile-plugins.png "")
 
 
-`Plugins.sh` is in the github repository (along with plugins.txt): If you want to auto-install Jenkins plugins add them to plugins.txt:
+`Plugins.sh` is in the github repository (along with plugins.txt):
 ![dockerfile-plugins](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/03-install-plugins.png "")
+
+If you want to auto-install Jenkins plugins add them to plugins.txt:
+![plugins-txt](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/03-plugins-txt.png "")
+
+Next we need to add a Cloud Config to Jenkins
+
+  1. Manage Jenkins
+  2. Configure System
+  3. Cloud
+  4. From the Add a New Cloud dropdown select Yet Another Docker
+
+![jenkins-yad](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/03-jenkins-yad.png "")
+
+Cloud Settings:
+
+  1. Name: `AzureJenkins`
+  2. Docker URL: `tcp://10.0.0.4:2376` (or the internal IP of your VM - you can find in the Azure portal)
+  3. Docker API Version: `1.23`
+  4. Host Credentials: `dockerTLS` (the certs credentials we added in the previous step)
+
+![jenkins-yad](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/03-jenkins-cloud.png "")
+
+Click Test Connection
+
+![jenkins-yad](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/03-jenkins-cloud-test.png "")
+
+You should see a confirmation that Jenkins was able to talk to your Docker host.
+
+Click Apply
+
+### Another Inbound Security Rule
