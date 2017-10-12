@@ -12,6 +12,7 @@ Creating a automated build pipeline for Azure has been an idea I've been kicking
   - [Docker in Azure](https://github.com/ehime/azure-containerpipeline/blob/master/assets/docker-azure.md)
     * [Using the Azure CLI](https://github.com/ehime/azure-containerpipeline/blob/master/assets/docker-azurecli.md)
     * [Using Shell Scripts](https://github.com/ehime/azure-containerpipeline/blob/master/assets/docker-azureshell.md)
+  - [Custom Jenkins Container and Ephemeral Slave Nodes ](https://github.com/ehime/azure-containerpipeline/blob/master/assets/jenkins-container.md)
 
 
 ## Maintainer
