@@ -9,7 +9,7 @@ _Current:_
 
 ### Introduction
 
-This section will cover setting up Docker in Azure on a Linux VM. There are several ways to accomplish this, but will only be covering a single solution. After we get this system up and running smoothly, we will explore another option for setting up the base system using the Azure command line interface (CLI). The architectural rough above will become the foundation for the pipeline and will be updated each section.
+In this section will cover setting up Docker in Azure on a Linux VM. There are several ways to accomplish this, but will only be covering a single solution. After we get this system up and running smoothly, we will explore another option for setting up the base system using the Azure command line interface (CLI). The architectural rough above will become the foundation for the pipeline and will be updated each section.
 
 
 ### Adding an Ubuntu VM to Azure
