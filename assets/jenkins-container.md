@@ -10,7 +10,6 @@ _Current:_
 ### Introduction
 
 In this portion of the paper we will setup Jenkins in a Docker container, using a custom image and configure Jenkins to spin up slave build environments that are Docker containers, on demand and then remove them to clean up. Very cool stuff!
-Here is a diagram of what we will have at the end of this part of the tutorial:
 
 
 ### The bootstrap code
@@ -127,7 +126,7 @@ Click OK
 Our custom Jenkins_Master Dockerfile automatically installs [Yet Another Docker Jenkins plugin](https://github.com/KostyaSha/yet-another-docker-plugin) which it what we will use to control our ephemeral slaves.
 
 In jenkins-master Dockerfile:
-<br>
+<br/ >
 ![dockerfile-plugins](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/03-dockerfile-plugins.png "")
 
 
