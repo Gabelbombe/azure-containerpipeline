@@ -127,6 +127,7 @@ Click OK
 Our custom Jenkins_Master Dockerfile automatically installs [Yet Another Docker Jenkins plugin](https://github.com/KostyaSha/yet-another-docker-plugin) which it what we will use to control our ephemeral slaves.
 
 In jenkins-master Dockerfile:
+
 ![dockerfile-plugins](https://raw.githubusercontent.com/ehime/azure-containerpipeline/master/assets/03-dockerfile-plugins.png "")
 
 
